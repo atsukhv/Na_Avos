@@ -1,0 +1,46 @@
+name: Build Windows EXE
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          version: "latest"
+
+      - name: Set up Python
+        run: uv python install 3.12
+
+      - name: Install dependencies
+        run: uv sync --group build
+
+      - name: Build EXE
+        run: uv run pyinstaller build_windows.spec
+
+      - name: Upload to GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: "${{ github.ref_name }}"
+          body: |
+            ## Скачать
+            👇 Скачай `na_avos.exe` ниже — установка не нужна, просто запусти.
+
+            ### Системные требования
+            - Windows 10 / 11
+            - Microsoft Edge WebView2 (встроен в Windows 11, для Windows 10 устанавливается автоматически)
+          files: dist/na_avos.exe
+          draft: false
+          prerelease: false
