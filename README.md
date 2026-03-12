@@ -35,7 +35,7 @@
 git clone https://github.com/atsukhv/Na_Avos
 cd Na_Avos
 uv sync
-uv run python src/launcher.py
+uv run python launcher.py
 ```
 
 **Сборка exe:**
